@@ -1,0 +1,541 @@
+[
+  {
+    "district": "Achham",
+    "districtNe": "अछाम",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Arghakhanchi",
+    "districtNe": "अर्घाखाँची",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Baglung",
+    "districtNe": "बागलुङ",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Baitadi",
+    "districtNe": "बैतडी",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Bajhang",
+    "districtNe": "बझाङ",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Bajura",
+    "districtNe": "बाजुरा",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Banke",
+    "districtNe": "बाँके",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Bara",
+    "districtNe": "बारा",
+    "province": "Madhesh",
+    "provinceNe": "मधेश",
+    "file": "Madhesh.json"
+  },
+  {
+    "district": "Bardiya",
+    "districtNe": "बर्दिया",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Bhaktapur",
+    "districtNe": "भक्तपुर",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Bhojpur",
+    "districtNe": "भोजपुर",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Chitawan",
+    "districtNe": "चितवन",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Dadeldhura",
+    "districtNe": "दडेल्धुरा",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Dailekh",
+    "districtNe": "दैलेख",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Dang",
+    "districtNe": "दाङ",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Darchula",
+    "districtNe": "दार्चुला",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Dhading",
+    "districtNe": "धादिङ",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Dhankuta",
+    "districtNe": "धनकुटा",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Dhanusha",
+    "districtNe": "धनुषा",
+    "province": "Madhesh",
+    "provinceNe": "मधेश",
+    "file": "Madhesh.json"
+  },
+  {
+    "district": "Dolakha",
+    "districtNe": "दोलखा",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Dolpa",
+    "districtNe": "डोल्पा",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Doti",
+    "districtNe": "डोटी",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Gorkha",
+    "districtNe": "गोरखा",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Gulmi",
+    "districtNe": "गुल्मी",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Humla",
+    "districtNe": "हुम्ला",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Ilam",
+    "districtNe": "इलाम",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Jajarkot",
+    "districtNe": "जाजरकोट",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Jhapa",
+    "districtNe": "झापा",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Jumla",
+    "districtNe": "जुम्ला",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Kailali",
+    "districtNe": "कैलाली",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Kalikot",
+    "districtNe": "कालिकोट",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Kanchanpur",
+    "districtNe": "कञ्चनपुर",
+    "province": "Sudurpashchim",
+    "provinceNe": "सुदूरपश्चिम",
+    "file": "Sudurpashchim.json"
+  },
+  {
+    "district": "Kapilbastu",
+    "districtNe": "कपिलवस्तु",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Kaski",
+    "districtNe": "कास्की",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Kathmandu",
+    "districtNe": "काठमाडौं",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Kavrepalanchok",
+    "districtNe": "काभ्रेपलाञ्चोक",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Khotang",
+    "districtNe": "खोटाङ",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Lalitpur",
+    "districtNe": "ललितपुर",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Lamjung",
+    "districtNe": "लमजुङ",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Mahottari",
+    "districtNe": "महोत्तरी",
+    "province": "Madhesh",
+    "provinceNe": "मधेश",
+    "file": "Madhesh.json"
+  },
+  {
+    "district": "Makwanpur",
+    "districtNe": "मकवानपुर",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Manang",
+    "districtNe": "मनाङ",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Morang",
+    "districtNe": "मोरङ",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Mugu",
+    "districtNe": "मुगु",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Mustang",
+    "districtNe": "मुस्ताङ",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Myagdi",
+    "districtNe": "म्याग्दी",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Nawalpur",
+    "districtNe": "नवलपुर",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Nuwakot",
+    "districtNe": "नुवाकोट",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Okhaldhunga",
+    "districtNe": "ओखलढुङ्गा",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Palpa",
+    "districtNe": "पाल्पा",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Panchthar",
+    "districtNe": "पाँचथर",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Parasi",
+    "districtNe": "परासी",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Parbat",
+    "districtNe": "पर्वत",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Parsa",
+    "districtNe": "पर्सा",
+    "province": "Madhesh",
+    "provinceNe": "मधेश",
+    "file": "Madhesh.json"
+  },
+  {
+    "district": "Pyuthan",
+    "districtNe": "प्युठान",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Ramechhap",
+    "districtNe": "रामेछाप",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Rasuwa",
+    "districtNe": "रसुवा",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Rautahat",
+    "districtNe": "रौतहट",
+    "province": "Madhesh",
+    "provinceNe": "मधेश",
+    "file": "Madhesh.json"
+  },
+  {
+    "district": "Rolpa",
+    "districtNe": "रोल्पा",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Rukum East",
+    "districtNe": "रुकुम पूर्व",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Rukum West",
+    "districtNe": "रुकुम पश्चिम",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Rupandehi",
+    "districtNe": "रुपन्देही",
+    "province": "Lumbini",
+    "provinceNe": "लुम्बिनी",
+    "file": "Lumbini.json"
+  },
+  {
+    "district": "Salyan",
+    "districtNe": "सल्यान",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Sankhuwasabha",
+    "districtNe": "संखुवासभा",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Saptari",
+    "districtNe": "सप्तरी",
+    "province": "Madhesh",
+    "provinceNe": "मधेश",
+    "file": "Madhesh.json"
+  },
+  {
+    "district": "Sarlahi",
+    "districtNe": "सर्लाही",
+    "province": "Madhesh",
+    "provinceNe": "मधेश",
+    "file": "Madhesh.json"
+  },
+  {
+    "district": "Sindhuli",
+    "districtNe": "सिन्धुली",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Sindhupalchok",
+    "districtNe": "सिन्धुपाल्चोक",
+    "province": "Bagmati",
+    "provinceNe": "बागमती",
+    "file": "Bagmati.json"
+  },
+  {
+    "district": "Siraha",
+    "districtNe": "सिराहा",
+    "province": "Madhesh",
+    "provinceNe": "मधेश",
+    "file": "Madhesh.json"
+  },
+  {
+    "district": "Solukhumbu",
+    "districtNe": "सोलुखुम्बु",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Sunsari",
+    "districtNe": "सुनसरी",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Surkhet",
+    "districtNe": "सुर्खेत",
+    "province": "Karnali",
+    "provinceNe": "कर्णाली",
+    "file": "Karnali.json"
+  },
+  {
+    "district": "Syangja",
+    "districtNe": "स्याङ्जा",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Tanahu",
+    "districtNe": "तनहुँ",
+    "province": "Gandaki",
+    "provinceNe": "गण्डकी",
+    "file": "Gandaki.json"
+  },
+  {
+    "district": "Taplejung",
+    "districtNe": "ताप्लेजुङ",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Terhathum",
+    "districtNe": "तेह्रथुम",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  },
+  {
+    "district": "Udayapur",
+    "districtNe": "उदयपुर",
+    "province": "Koshi",
+    "provinceNe": "कोशी",
+    "file": "Koshi.json"
+  }
+]

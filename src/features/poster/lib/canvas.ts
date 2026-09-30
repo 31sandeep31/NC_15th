@@ -92,7 +92,7 @@ export const getPillStyle = (element: HTMLElement): PillStyle => {
   };
 };
 
-const drawRoundedRect = (
+export const drawRoundedRect = (
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
@@ -110,7 +110,7 @@ const drawRoundedRect = (
   ctx.closePath();
 };
 
-const downloadCanvasImage = async (canvas: HTMLCanvasElement, name: string) => {
+export const downloadCanvasImage = async (canvas: HTMLCanvasElement, name: string) => {
   const blob = await new Promise<Blob>((resolve, reject) => {
     canvas.toBlob(
       (b) => {

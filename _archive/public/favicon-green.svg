@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="canopy" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#7de28c"/>
+      <stop offset="0.55" stop-color="#33a853"/>
+      <stop offset="1" stop-color="#147a34"/>
+    </linearGradient>
+    <linearGradient id="trunk" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#96602d"/>
+      <stop offset="1" stop-color="#6a411b"/>
+    </linearGradient>
+  </defs>
+  <path
+    d="M60 68h9v42c0 4 3 7 7 7H53c4 0 7-3 7-7z"
+    fill="url(#trunk)"
+  />
+  <g fill="url(#canopy)">
+    <circle cx="64" cy="52" r="34"/>
+    <circle cx="34" cy="66" r="24"/>
+    <circle cx="94" cy="66" r="24"/>
+    <circle cx="46" cy="34" r="22"/>
+    <circle cx="82" cy="34" r="22"/>
+    <circle cx="64" cy="24" r="20"/>
+  </g>
+  <g fill="#ffffff" opacity="0.18">
+    <circle cx="50" cy="34" r="13"/>
+    <circle cx="86" cy="54" r="9"/>
+  </g>
+</svg>
