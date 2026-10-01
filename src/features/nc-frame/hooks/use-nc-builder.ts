@@ -14,10 +14,11 @@ import {
 } from "../lib/districts";
 import { generateNcPoster } from "../lib/export";
 import {
-  DEFAULT_LAYOUT_ID,
+  DEFAULT_FRAME_ID,
+  findNcFrame,
   NC_DEFAULT_COLORS,
-  NC_FRAME,
-  NC_LAYOUT_PRESETS,
+  type NcFrameId,
+  type NcLayoutPreset,
   type NcLayoutPresetId,
   type NcPosition,
 } from "../lib/frame";
@@ -36,17 +37,28 @@ type Offset = { x: number; y: number };
 const ZERO: Offset = { x: 0, y: 0 };
 
 export function useNcBuilder() {
-  const [layoutId, setLayoutId] = useState<NcLayoutPresetId>(DEFAULT_LAYOUT_ID);
+  const [frameId, setFrameId] = useState<NcFrameId>(DEFAULT_FRAME_ID);
+  const frame = findNcFrame(frameId);
+  const [overlayVariantId, setOverlayVariantId] = useState<string>(
+    frame.defaultOverlayVariantId,
+  );
+  const overlayVariant =
+    frame.overlayVariants.find((v) => v.id === overlayVariantId) ??
+    frame.overlayVariants[0];
+
+  const [layoutId, setLayoutId] = useState<NcLayoutPresetId>(
+    frame.defaultLayoutId,
+  );
 
   const [namePos, setNamePos] = useState<NcPosition>(
-    NC_LAYOUT_PRESETS[0].name,
+    frame.layoutPresets[0].name,
   );
   const [rolePos, setRolePos] = useState<NcPosition>(
-    NC_LAYOUT_PRESETS[0].role,
+    frame.layoutPresets[0].role,
   );
-  const [mapPos, setMapPos] = useState<NcPosition>(NC_LAYOUT_PRESETS[0].map);
+  const [mapPos, setMapPos] = useState<NcPosition>(frame.layoutPresets[0].map);
   const [mapLabelPos, setMapLabelPos] = useState<NcPosition>(
-    NC_LAYOUT_PRESETS[0].mapLabel,
+    frame.layoutPresets[0].mapLabel,
   );
 
   const [hasPhoto, setHasPhoto] = useState(false);
@@ -296,19 +308,43 @@ export function useNcBuilder() {
     }
   }, []);
 
-  const applyLayout = useCallback((id: NcLayoutPresetId) => {
-    const preset = NC_LAYOUT_PRESETS.find((p) => p.id === id);
-    if (!preset) return;
-    setLayoutId(preset.id);
-    setNamePos(preset.name);
-    setRolePos(preset.role);
-    setMapPos(preset.map);
-    setMapLabelPos(preset.mapLabel);
-    setNameOffset(ZERO);
-    setMapOffset(ZERO);
-    setMapLabelOffset(ZERO);
-    setDesignationOffsets(designationLines.map(() => ({ ...ZERO })));
-  }, [designationLines]);
+  const applyPreset = useCallback(
+    (preset: NcLayoutPreset) => {
+      setLayoutId(preset.id);
+      setNamePos(preset.name);
+      setRolePos(preset.role);
+      setMapPos(preset.map);
+      setMapLabelPos(preset.mapLabel);
+      setNameOffset(ZERO);
+      setMapOffset(ZERO);
+      setMapLabelOffset(ZERO);
+      setDesignationOffsets(designationLines.map(() => ({ ...ZERO })));
+    },
+    [designationLines],
+  );
+
+  const applyLayout = useCallback(
+    (id: NcLayoutPresetId) => {
+      const preset = frame.layoutPresets.find((p) => p.id === id);
+      if (!preset) return;
+      applyPreset(preset);
+    },
+    [applyPreset, frame],
+  );
+
+  const applyFrame = useCallback(
+    (id: NcFrameId, nextLayoutId?: NcLayoutPresetId) => {
+      const next = findNcFrame(id);
+      setFrameId(id);
+      setOverlayVariantId(next.defaultOverlayVariantId);
+      const preset =
+        next.layoutPresets.find(
+          (p) => p.id === (nextLayoutId ?? next.defaultLayoutId),
+        ) ?? next.layoutPresets[0];
+      if (preset) applyPreset(preset);
+    },
+    [applyPreset],
+  );
 
   const clearAll = useCallback(() => {
     if (currentPhotoUrlRef.current) {
@@ -319,11 +355,14 @@ export function useNcBuilder() {
     removeBgRunIdRef.current += 1;
     districtRunIdRef.current += 1;
 
-    setLayoutId(DEFAULT_LAYOUT_ID);
-    setNamePos(NC_LAYOUT_PRESETS[0].name);
-    setRolePos(NC_LAYOUT_PRESETS[0].role);
-    setMapPos(NC_LAYOUT_PRESETS[0].map);
-    setMapLabelPos(NC_LAYOUT_PRESETS[0].mapLabel);
+    const preset =
+      frame.layoutPresets.find((p) => p.id === frame.defaultLayoutId) ??
+      frame.layoutPresets[0];
+    setLayoutId(preset.id);
+    setNamePos(preset.name);
+    setRolePos(preset.role);
+    setMapPos(preset.map);
+    setMapLabelPos(preset.mapLabel);
 
     setPhotoSrc("");
     setHasPhoto(false);
@@ -360,7 +399,7 @@ export function useNcBuilder() {
     setMapLabelTextStyle({ ...DEFAULT_TEXT_STYLE });
 
     setSelectedTextId(null);
-  }, []);
+  }, [frame]);
 
   const addDesignation = useCallback(() => {
     if (designationLines.length >= MAX_DESIGNATIONS) return;
@@ -491,7 +530,7 @@ export function useNcBuilder() {
   }, [mapScale, mapLabelScale, nameScaleAdjust, roleScaleAdjusts, scale]);
 
   const nameTransformStyle = useMemo(() => {
-    const { nameText } = NC_FRAME;
+    const { nameText } = frame;
     const parts = [
       `left: ${namePos.x}%`,
       `top: ${namePos.y}%`,
@@ -505,11 +544,11 @@ export function useNcBuilder() {
     ];
     if (nameTextStyle.italic) parts.push("font-style: italic");
     return parts.join("; ");
-  }, [nameColor, nameOffset, namePos, nameScaleAdjust, nameTextStyle]);
+  }, [nameColor, nameOffset, namePos, nameScaleAdjust, nameTextStyle, frame]);
 
   const getRoleTransformStyle = useCallback(
     (index: number) => {
-      const { roleText } = NC_FRAME;
+      const { roleText } = frame;
       const offsets = designationOffsets[index] ?? ZERO;
       const itemScale = roleScaleAdjusts[index] ?? 1;
       const itemStyle = designationTextStyles[index] ?? DEFAULT_TEXT_STYLE;
@@ -532,24 +571,25 @@ export function useNcBuilder() {
     [
       designationColors,
       designationOffsets,
-      designationTextStyles,
-      rolePos,
-      roleScaleAdjusts,
-    ],
+        designationTextStyles,
+        rolePos,
+        roleScaleAdjusts,
+        frame,
+      ],
   );
 
   const mapTransformStyle = useMemo(() => {
     return [
       `left: ${mapPos.x}%`,
       `top: ${mapPos.y}%`,
-      `width: ${NC_FRAME.map.widthPct}%`,
+      `width: ${frame.map.widthPct}%`,
       "transform-origin: left top",
       `transform: translate(${mapOffset.x}px, ${mapOffset.y}px) scale(${mapScale})`,
     ].join("; ");
-  }, [mapOffset, mapPos, mapScale]);
+  }, [mapOffset, mapPos, mapScale, frame.map.widthPct]);
 
   const mapLabelTransformStyle = useMemo(() => {
-    const { mapLabel: cfg } = NC_FRAME;
+    const { mapLabel: cfg } = frame;
     const parts = [
       `left: ${mapLabelPos.x}%`,
       `top: ${mapLabelPos.y}%`,
@@ -568,6 +608,7 @@ export function useNcBuilder() {
     mapLabelPos,
     mapLabelScale,
     mapLabelTextStyle,
+    frame,
   ]);
 
   const exportPoster = useCallback(async () => {
@@ -595,7 +636,7 @@ export function useNcBuilder() {
             color: designationColors[index] ?? undefined,
             el,
             scale:
-              NC_FRAME.roleText.scale * (roleScaleAdjusts[index] ?? 1),
+              frame.roleText.scale * (roleScaleAdjusts[index] ?? 1),
             text,
           },
         ];
@@ -605,8 +646,9 @@ export function useNcBuilder() {
 
       await generateNcPoster({
         designations,
+        exportName: frame.exportName,
         frameImage,
-        hasOverlay: NC_FRAME.hasOverlay,
+        hasOverlay: frame.hasOverlay,
         hasPhoto,
         map:
           shape && mapEl
@@ -619,7 +661,7 @@ export function useNcBuilder() {
                 color: mapLabelColor ?? undefined,
                 el: mapLabelEl,
                 scale:
-                  NC_FRAME.mapLabel.scale * mapLabelScale * mapScale,
+                  frame.mapLabel.scale * mapLabelScale * mapScale,
                 text: mapLabel,
               }
             : undefined,
@@ -628,11 +670,11 @@ export function useNcBuilder() {
             ? {
                 color: nameColor ?? undefined,
                 el: nameEl,
-                scale: NC_FRAME.nameText.scale * nameScaleAdjust,
+                scale: frame.nameText.scale * nameScaleAdjust,
                 text: fullName,
               }
             : undefined,
-        overlaySrc: NC_FRAME.overlaySrc,
+        overlaySrc: overlayVariant.src,
         photoImage: photoImageRef.current ?? undefined,
         photoSrc,
         stage,
@@ -649,6 +691,7 @@ export function useNcBuilder() {
   }, [
     designationColors,
     designationLines,
+    frame,
     fullName,
     hasPhoto,
     mapFill,
@@ -658,6 +701,7 @@ export function useNcBuilder() {
     mapScale,
     nameColor,
     nameScaleAdjust,
+    overlayVariant,
     photoSrc,
     roleScaleAdjusts,
     shape,
@@ -692,6 +736,8 @@ export function useNcBuilder() {
     districts,
     exportBusy,
     exportPoster,
+    frame,
+    frameId,
     frameImageRef,
     frameOverlayRef,
     fullName,
@@ -701,6 +747,7 @@ export function useNcBuilder() {
     groupedDistricts,
     hasPhoto,
     layoutId,
+    layoutPresets: frame.layoutPresets,
     mapFill,
     mapLabel,
     mapLabelColor,
@@ -726,7 +773,10 @@ export function useNcBuilder() {
     offsetX,
     offsetY,
     activeRoleIndex,
+    applyFrame,
     applyLayout,
+    overlayVariant,
+    overlayVariantId,
     photoImageRef,
     photoSrc,
     photoUploadRef,
@@ -751,6 +801,7 @@ export function useNcBuilder() {
     setMapLabelTextStyle,
     setNameColor,
     setNameTextStyle,
+    setOverlayVariantId,
     setRemoveBgQuality,
     setSelectedTextId,
     setScaleValue,

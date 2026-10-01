@@ -38,8 +38,8 @@ import { useNcBuilder } from "./hooks/use-nc-builder";
 import { useNcDrag } from "./hooks/use-nc-drag";
 import type { DistrictEntry } from "./lib/districts";
 import {
-  NC_FRAME,
-  NC_LAYOUT_PRESETS,
+  NC_FRAMES,
+  type NcFrameId,
   type NcLayoutPresetId,
 } from "./lib/frame";
 import {
@@ -67,31 +67,55 @@ const COLOR_SWATCHES = [
   "#7c3aed",
 ];
 
-type PreviewPresetId = NcLayoutPresetId;
+type PreviewPresetId = "dhanyabaad" | Exclude<NcLayoutPresetId, "default">;
 
-const PREVIEW_DEMO: Record<
-  PreviewPresetId,
-  { district: string; label: string; name: string; roles: string[] }
-> = {
+type PreviewDemo = {
+  frameId: NcFrameId;
+  layoutId: NcLayoutPresetId;
+  district: string;
+  label: string;
+  name: string;
+  roles: string[];
+};
+
+const PREVIEW_DEMO: Record<PreviewPresetId, PreviewDemo> = {
   "text-left": {
+    frameId: "nc15",
+    layoutId: "text-left",
     district: "Chitawan",
     label: "चितवन",
     name: "गगन थाप",
     roles: ["प्रदेश प्रतिनिधि उम्मेदवार"],
   },
   "text-right": {
+    frameId: "nc15",
+    layoutId: "text-right",
     district: "Rupandehi",
     label: "रुपन्देही क्षेत्र नं. २",
     name: "गगन थाप",
     roles: ["महाधिवेशन प्रतिनिधि उम्मेदवार", "(खुला तर्फ)"],
   },
+  dhanyabaad: {
+    frameId: "dhanyabaad",
+    layoutId: "default",
+    district: "Gorkha",
+    label: "गोरखा",
+    name: "गगन थाप",
+    roles: ["महाधिवेशन प्रतिनिधि उम्मेदवार"],
+  },
 };
 
-// `?preview=text-left|text-right` renders a bare frame without any panels so
-// the layout thumbnails can be regenerated from the live renderer.
+// `?preview=text-left|text-right|dhanyabaad` renders a bare frame without any
+// panels so the layout thumbnails can be regenerated from the live renderer.
 function readPreviewPreset(): PreviewPresetId | null {
   const value = new URLSearchParams(window.location.search).get("preview");
-  if (value === "text-left" || value === "text-right") return value;
+  if (
+    value === "text-left" ||
+    value === "text-right" ||
+    value === "dhanyabaad"
+  ) {
+    return value;
+  }
   return null;
 }
 
@@ -106,7 +130,7 @@ export function NcFramePage() {
     previewReadyRef.current = true;
 
     const demo = PREVIEW_DEMO[previewPreset];
-    nc.applyLayout(previewPreset);
+    nc.applyFrame(demo.frameId, demo.layoutId);
     nc.setFullName(demo.name);
     nc.setDesignationLines([...demo.roles]);
     nc.setDesignationOffsets(demo.roles.map(() => ({ x: 0, y: 0 })));
@@ -115,9 +139,9 @@ export function NcFramePage() {
     nc.setDesignationTextStyles(
       demo.roles.map(() => ({ ...DEFAULT_TEXT_STYLE })),
     );
-    nc.setMapLabel(demo.label);
     const entry = nc.districts.find((d) => d.district === demo.district);
     if (entry) void nc.selectDistrict(entry);
+    nc.setMapLabel(demo.label);
   }, [nc, previewPreset]);
 
   const drag = useNcDrag({
@@ -143,13 +167,13 @@ export function NcFramePage() {
     const link = document.createElement("link");
     link.rel = "preload";
     link.as = "image";
-    link.href = NC_FRAME.src;
+    link.href = nc.frame.src;
     link.dataset.ncFramePreload = "1";
     document.head.appendChild(link);
     return () => {
       link.remove();
     };
-  }, []);
+  }, [nc.frame.src]);
 
   const photoDragProps = drag.getDragProps("photo", { clamp: false });
   const nameDragProps = drag.getDragProps("name");
@@ -226,11 +250,11 @@ export function NcFramePage() {
           className={
             isPreview
               ? "hidden"
-              : "order-3 max-w-full rounded-lg border bg-card p-3 shadow-sm sm:p-4 lg:order-1 lg:p-5"
+              : "order-2 max-w-full rounded-lg border bg-card p-3 shadow-sm sm:p-4 lg:order-1 lg:p-5"
           }
         >
           <div className="flex flex-col gap-3 lg:gap-5">
-            <div className="hidden items-center justify-between lg:flex">
+            <div className="flex items-center justify-between">
               <h2 className="font-medium text-sm">Controls</h2>
               <Button
                 className="h-7 gap-1 px-2 text-muted-foreground text-xs"
@@ -426,12 +450,7 @@ export function NcFramePage() {
             </div>
 
             {/* Map label */}
-            <div
-              className={cn(
-                "flex-col gap-1.5",
-                nc.shape ? "flex" : "hidden lg:flex",
-              )}
-            >
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="ncMapLabelInput">Map Label</Label>
               <TranslitInput
                 id="ncMapLabelInput"
@@ -444,16 +463,9 @@ export function NcFramePage() {
             </div>
 
             {/* Name + Designation */}
-            <div
-              className={cn(
-                "flex flex-col gap-3 lg:gap-4",
-                !nc.hasPhoto && "hidden lg:flex",
-              )}
-            >
+            <div className="flex flex-col gap-3 lg:gap-4">
               <div className="flex flex-col gap-1.5">
-                <Label className="hidden lg:block" htmlFor="ncFullName">
-                  Full Name
-                </Label>
+                <Label htmlFor="ncFullName">Full Name</Label>
                 <TranslitInput
                   id="ncFullName"
                   listboxId="nc-name-suggestions"
@@ -465,7 +477,7 @@ export function NcFramePage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label className="hidden lg:block">Designation</Label>
+                <Label>Designation</Label>
                 <div className="flex flex-col gap-2">
                   {nc.designationLines.map((line, index) => (
                     <TranslitInput
@@ -502,12 +514,7 @@ export function NcFramePage() {
             </div>
 
             {/* Export */}
-            <div
-              className={cn(
-                "flex flex-col gap-2",
-                !nc.hasPhoto && "hidden lg:flex",
-              )}
-            >
+            <div className="flex flex-col gap-2">
               <Button disabled={nc.exportBusy} onClick={nc.exportPoster} variant="outline">
                 <Download className="size-4" />
                 {nc.exportBusy ? "Downloading..." : "Download Image"}
@@ -521,7 +528,7 @@ export function NcFramePage() {
           className={
             isPreview
               ? "flex h-full w-full items-center justify-center"
-              : "order-2 flex flex-col items-center gap-2 lg:order-2"
+              : "sticky top-0 z-30 order-1 flex flex-col items-center gap-2 bg-background pb-1 lg:static lg:z-auto lg:order-2 lg:bg-transparent lg:pb-0"
           }
         >
           <div
@@ -538,21 +545,24 @@ export function NcFramePage() {
             ref={nc.stageRef}
           >
             <img
-              alt="NC 15th Mahadhibeshan frame"
+              alt={`${nc.frame.label} frame`}
               className="absolute inset-0 h-full w-full object-contain"
               onPointerDown={() => nc.setSelectedTextId(null)}
               ref={nc.frameImageRef}
-              src={NC_FRAME.src}
+              src={nc.frame.src}
             />
 
             {nc.hasPhoto && nc.photoSrc && (
               <div
                 className={cn(
-                  "pointer-events-none absolute top-1/2 left-1/2 w-[35%] touch-none select-none",
+                  "pointer-events-none absolute touch-none select-none",
                   nc.selectedTextId === "photo" && "z-10",
                 )}
                 id="ncPhotoElement"
                 style={{
+                  left: `${nc.frame.photo.x}%`,
+                  top: `${nc.frame.photo.y}%`,
+                  width: `${nc.frame.photo.widthPct}%`,
                   transform: `translate(-50%, -50%) translate(${nc.offsetX}px, ${nc.offsetY}px) scale(${nc.scale})`,
                 }}
               >
@@ -615,11 +625,13 @@ export function NcFramePage() {
               </div>
             )}
 
-            <img
-              alt="Frame footer"
-              className="pointer-events-none absolute inset-0 z-20 h-full w-full object-contain"
-              src={NC_FRAME.overlaySrc}
-            />
+            {nc.frame.hasOverlay && (
+              <img
+                alt="Frame greeting"
+                className="pointer-events-none absolute inset-0 z-20 h-full w-full object-contain"
+                src={nc.overlayVariant.src}
+              />
+            )}
 
             <div
               className="pointer-events-none absolute z-30"
@@ -673,7 +685,7 @@ export function NcFramePage() {
                       onChange={handleScale}
                       value={nc.nameScaleAdjust}
                       visualScale={
-                        NC_FRAME.nameText.scale * nc.nameScaleAdjust
+                        nc.frame.nameText.scale * nc.nameScaleAdjust
                       }
                     />
                   </div>
@@ -724,7 +736,7 @@ export function NcFramePage() {
                         onChange={handleScale}
                         value={nc.roleScaleAdjusts[index] ?? 1}
                         visualScale={
-                          NC_FRAME.roleText.scale *
+                          nc.frame.roleText.scale *
                           (nc.roleScaleAdjusts[index] ?? 1)
                         }
                       />
@@ -821,19 +833,67 @@ export function NcFramePage() {
           </div>
         </div>
 
-        {/* Right Panel - Layouts */}
+        {/* Right Panel - Frame & Layouts */}
         <div
           className={
             isPreview
               ? "hidden"
-              : "order-1 max-w-full overflow-hidden rounded-lg border bg-card p-3 shadow-sm sm:p-4 lg:order-3 lg:p-5"
+              : "order-3 max-w-full overflow-hidden rounded-lg border bg-card p-3 shadow-sm sm:p-4 lg:order-3 lg:p-5"
           }
         >
-          <h2 className="mb-2 hidden font-medium text-sm lg:block">
-            Layout
-          </h2>
+          <h2 className="mb-2 font-medium text-sm">Frame</h2>
+          <div className="mb-4 grid grid-cols-2 gap-2">
+            {NC_FRAMES.map((option) => (
+              <button
+                className={cn(
+                  "overflow-hidden rounded-md border text-left transition hover:-translate-y-0.5 hover:shadow-md",
+                  nc.frameId === option.id
+                    ? "border-primary ring-2 ring-primary/30"
+                    : "border-border",
+                )}
+                key={option.id}
+                onClick={() => nc.applyFrame(option.id)}
+                type="button"
+              >
+                <img
+                  alt={option.label}
+                  className="h-20 w-full bg-muted/50 object-cover"
+                  loading="lazy"
+                  src={option.thumb}
+                />
+                <div className="p-2">
+                  <div className="font-medium text-xs">{option.label}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {nc.frame.overlayVariants.length > 1 && (
+            <div className="mb-4">
+              <div className="mb-1 font-medium text-xs">धन्यवाद</div>
+              <div className="flex flex-wrap gap-2">
+                {nc.frame.overlayVariants.map((variant) => (
+                  <button
+                    className={cn(
+                      "rounded-md border px-2 py-1 text-xs transition",
+                      nc.overlayVariantId === variant.id
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground hover:bg-muted",
+                    )}
+                    key={variant.id}
+                    onClick={() => nc.setOverlayVariantId(variant.id)}
+                    type="button"
+                  >
+                    {variant.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <h2 className="mb-2 font-medium text-sm">Layout</h2>
           <div className="flex flex-col gap-2">
-            {NC_LAYOUT_PRESETS.map((preset) => (
+            {nc.layoutPresets.map((preset) => (
               <button
                 className={cn(
                   "overflow-hidden rounded-md border text-left transition hover:-translate-y-0.5 hover:shadow-md",
@@ -1051,10 +1111,10 @@ function TextToolbar({
       : (nc.designationTextStyles[desIdx] ?? { bold: false, italic: false });
 
   const defaultColor = isName
-    ? NC_FRAME.nameText.color
+    ? nc.frame.nameText.color
     : isMapLabel
-      ? NC_FRAME.mapLabel.color
-      : NC_FRAME.roleText.color;
+      ? nc.frame.mapLabel.color
+      : nc.frame.roleText.color;
 
   const currentColor = isName
     ? nc.nameColor

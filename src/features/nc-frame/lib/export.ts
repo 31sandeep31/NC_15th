@@ -24,6 +24,7 @@ export type NcExportConfig = {
   hasPhoto: boolean;
   hasOverlay: boolean;
   overlaySrc: string;
+  exportName: string;
   name?: NcExportText;
   designations: NcExportText[];
   mapLabel?: NcExportText;
@@ -180,5 +181,5 @@ export async function generateNcPoster(config: NcExportConfig) {
   for (const designation of config.designations) drawText(designation);
   if (config.mapLabel) drawText(config.mapLabel);
 
-  await downloadCanvasImage(canvas, "nc-15th-mahadhibeshan.jpg");
+  await downloadCanvasImage(canvas, config.exportName);
 }
