@@ -278,3 +278,12 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Short phone viewports: shrink the sticky stage so the controls below
+   stay reachable instead of being covered by the pinned preview. */
+@media (max-height: 740px) and (max-width: 1023px) {
+  #stage {
+    max-width: min(100%, 280px);
+    margin-inline: auto;
+  }
+}

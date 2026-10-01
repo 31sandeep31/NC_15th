@@ -24,6 +24,7 @@ export type NcExportConfig = {
   hasPhoto: boolean;
   hasOverlay: boolean;
   overlaySrc: string;
+  footerSrc?: string;
   exportName: string;
   name?: NcExportText;
   designations: NcExportText[];
@@ -117,6 +118,15 @@ export async function generateNcPoster(config: NcExportConfig) {
       const width = pRect.width * sx;
       const height = pRect.height * sy;
       ctx.drawImage(safePhoto, centerX - width / 2, centerY - height / 2, width, height);
+    }
+  }
+
+  if (config.footerSrc) {
+    try {
+      const footerImage = await loadHtmlImage(config.footerSrc);
+      ctx.drawImage(footerImage, 0, 0, canvas.width, canvas.height);
+    } catch {
+      // Footer is decorative — never block the export because of it.
     }
   }
 

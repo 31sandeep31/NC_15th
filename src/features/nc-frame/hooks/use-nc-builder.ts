@@ -647,6 +647,7 @@ export function useNcBuilder() {
       await generateNcPoster({
         designations,
         exportName: frame.exportName,
+        footerSrc: frame.footerSrc,
         frameImage,
         hasOverlay: frame.hasOverlay,
         hasPhoto,

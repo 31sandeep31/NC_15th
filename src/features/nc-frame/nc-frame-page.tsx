@@ -625,6 +625,14 @@ export function NcFramePage() {
               </div>
             )}
 
+            {nc.frame.footerSrc && (
+              <img
+                alt="Frame footer"
+                className="pointer-events-none absolute inset-0 z-20 h-full w-full object-contain"
+                src={nc.frame.footerSrc}
+              />
+            )}
+
             {nc.frame.hasOverlay && (
               <img
                 alt="Frame greeting"

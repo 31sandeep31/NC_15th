@@ -46,6 +46,7 @@ export type NcFrameConfig = {
   description: string;
   thumb: string;
   src: string;
+  footerSrc?: string;
   hasOverlay: boolean;
   overlayVariants: NcOverlayVariant[];
   defaultOverlayVariantId: string;
@@ -151,6 +152,7 @@ export const NC_FRAMES: NcFrameConfig[] = [
     description: "Thank-you frame with selectable धन्यवाद greeting",
     thumb: "/frames/dhanyabad/thumb.jpg",
     src: "/frames/dhanyabad/frame.jpg",
+    footerSrc: "/frames/dhanyabad/footer.png",
     hasOverlay: true,
     overlayVariants: [
       {
