@@ -36,6 +36,8 @@ export type NcOverlayVariant = {
   id: string;
   label: string;
   src: string;
+  /** Content bounds in frame-percent used as the draggable hit area. */
+  bbox?: { height: number; width: number; x: number; y: number };
 };
 
 export type NcFrameId = "dhanyabaad" | "nc15";
@@ -111,6 +113,7 @@ export const NC_FRAMES: NcFrameConfig[] = [
         id: "footer",
         label: "Footer",
         src: "/frames/nc/footer.png",
+        bbox: { height: 32.03, width: 100, x: 0, y: 67.97 },
       },
     ],
     defaultOverlayVariantId: "footer",
@@ -159,11 +162,13 @@ export const NC_FRAMES: NcFrameConfig[] = [
         id: "hardik",
         label: "हार्दिक धन्यवाद",
         src: "/frames/dhanyabad/overlay-hardik.png",
+        bbox: { height: 20.263, width: 55.689, x: 39.867, y: 48.774 },
       },
       {
         id: "short",
         label: "धन्यवाद!",
         src: "/frames/dhanyabad/overlay-short.png",
+        bbox: { height: 13.047, width: 55.689, x: 39.867, y: 52.4 },
       },
     ],
     defaultOverlayVariantId: "hardik",

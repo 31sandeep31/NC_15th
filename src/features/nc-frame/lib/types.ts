@@ -1,4 +1,5 @@
 export type SelectedTextId =
+  | "greeting"
   | "photo"
   | "name"
   | "map"

@@ -24,6 +24,13 @@ export type NcExportConfig = {
   hasPhoto: boolean;
   hasOverlay: boolean;
   overlaySrc: string;
+  overlayTransform?: {
+    originX: number;
+    originY: number;
+    scale: number;
+    x: number;
+    y: number;
+  };
   footerSrc?: string;
   exportName: string;
   name?: NcExportText;
@@ -133,7 +140,19 @@ export async function generateNcPoster(config: NcExportConfig) {
   if (config.hasOverlay && config.overlaySrc) {
     try {
       const overlayImage = await loadHtmlImage(config.overlaySrc);
-      ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
+      const t = config.overlayTransform;
+      if (t && (t.x !== 0 || t.y !== 0 || t.scale !== 1)) {
+        const originX = (t.originX / 100) * canvas.width;
+        const originY = (t.originY / 100) * canvas.height;
+        ctx.save();
+        ctx.translate(originX + t.x * sx, originY + t.y * sy);
+        ctx.scale(t.scale, t.scale);
+        ctx.translate(-originX, -originY);
+        ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      } else {
+        ctx.drawImage(overlayImage, 0, 0, canvas.width, canvas.height);
+      }
     } catch {
       // Overlay is decorative — never block the export because of it.
     }

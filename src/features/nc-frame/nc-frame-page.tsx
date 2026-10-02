@@ -84,7 +84,7 @@ const PREVIEW_DEMO: Record<PreviewPresetId, PreviewDemo> = {
     layoutId: "text-left",
     district: "Chitawan",
     label: "चितवन",
-    name: "गगन थाप",
+    name: "गगन थापा",
     roles: ["प्रदेश प्रतिनिधि उम्मेदवार"],
   },
   "text-right": {
@@ -92,7 +92,7 @@ const PREVIEW_DEMO: Record<PreviewPresetId, PreviewDemo> = {
     layoutId: "text-right",
     district: "Rupandehi",
     label: "रुपन्देही क्षेत्र नं. २",
-    name: "गगन थाप",
+    name: "गगन थापा",
     roles: ["महाधिवेशन प्रतिनिधि उम्मेदवार", "(खुला तर्फ)"],
   },
   dhanyabaad: {
@@ -100,7 +100,7 @@ const PREVIEW_DEMO: Record<PreviewPresetId, PreviewDemo> = {
     layoutId: "default",
     district: "Gorkha",
     label: "गोरखा",
-    name: "गगन थाप",
+    name: "गगन थापा",
     roles: ["महाधिवेशन प्रतिनिधि उम्मेदवार"],
   },
 };
@@ -176,12 +176,23 @@ export function NcFramePage() {
   }, [nc.frame.src]);
 
   const photoDragProps = drag.getDragProps("photo", { clamp: false });
+  const greetingDragProps = drag.getDragProps("greeting");
   const nameDragProps = drag.getDragProps("name");
   const mapDragProps = drag.getDragProps("map");
   const mapLabelDragProps = drag.getDragProps("mapLabel");
   const roleDragProps = nc.designationLines.map((_, index) =>
     drag.getDragProps(index),
   );
+
+  const greetingBbox = nc.overlayVariant.bbox ?? {
+    height: 100,
+    width: 100,
+    x: 0,
+    y: 0,
+  };
+  const greetingTransform = `translate(${nc.greetingOffset.x}px, ${nc.greetingOffset.y}px) scale(${nc.greetingScale})`;
+  const greetingOriginX = greetingBbox.x + greetingBbox.width / 2;
+  const greetingOriginY = greetingBbox.y + greetingBbox.height / 2;
 
   const handleDistrictChange = useCallback(
     (value: string) => {
@@ -326,6 +337,27 @@ export function NcFramePage() {
                   </button>
                 )}
               </div>
+
+              {nc.hasPhoto && (
+                <div className="mt-2 flex flex-col gap-1.5">
+                  <Button
+                    className="w-full gap-2 border-primary/40 text-primary hover:bg-primary/10 hover:text-primary"
+                    disabled={nc.removeBgBusy}
+                    onClick={() => nc.removeBackground(nc.removeBgQuality)}
+                    variant="outline"
+                  >
+                    <Sparkles className="size-4" />
+                    {nc.removeBgBusy
+                      ? "Removing background..."
+                      : "Remove Background"}
+                  </Button>
+                  {nc.removeBgMessage && (
+                    <p className="text-muted-foreground text-xs">
+                      {nc.removeBgMessage}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Province + District */}
@@ -568,14 +600,8 @@ export function NcFramePage() {
               >
                 <img
                   alt="Uploaded portrait"
-                  className="block w-full touch-none select-none"
+                  className="pointer-events-auto block w-full cursor-grab touch-none select-none"
                   draggable={false}
-                  ref={nc.photoImageRef}
-                  src={nc.photoSrc}
-                />
-
-                <div
-                  className="pointer-events-auto absolute top-1/2 left-1/2 z-40 flex size-12 -translate-x-1/2 -translate-y-1/2 cursor-grab items-center justify-center rounded-full bg-background/90 text-foreground opacity-80 shadow-md backdrop-blur-md transition-opacity hover:opacity-100"
                   onPointerCancel={photoDragProps.onPointerCancel}
                   onPointerDown={photoDragProps.onPointerDown}
                   onPointerLeave={photoDragProps.onPointerUp}
@@ -584,25 +610,41 @@ export function NcFramePage() {
                     photoDragProps.onPointerUp(e);
                     nc.setSelectedTextId("photo");
                   }}
-                  onTouchEnd={
-                    nc.selectedTextId === "photo"
-                      ? pinch.onTouchEnd
-                      : undefined
-                  }
-                  onTouchMove={
-                    nc.selectedTextId === "photo"
-                      ? pinch.onTouchMove
-                      : undefined
-                  }
-                  onTouchStart={
-                    nc.selectedTextId === "photo"
-                      ? pinch.onTouchStart
-                      : undefined
-                  }
-                  title="Drag to move photo"
-                >
-                  <Move className="size-5" />
-                </div>
+                  ref={nc.photoImageRef}
+                  src={nc.photoSrc}
+                />
+
+                {nc.selectedTextId === "photo" && (
+                  <div
+                    className="pointer-events-auto absolute top-1/2 left-1/2 z-40 flex size-12 -translate-x-1/2 -translate-y-1/2 cursor-grab items-center justify-center rounded-full bg-background/90 text-foreground opacity-80 shadow-md backdrop-blur-md transition-opacity hover:opacity-100"
+                    onPointerCancel={photoDragProps.onPointerCancel}
+                    onPointerDown={photoDragProps.onPointerDown}
+                    onPointerLeave={photoDragProps.onPointerUp}
+                    onPointerMove={photoDragProps.onPointerMove}
+                    onPointerUp={(e) => {
+                      photoDragProps.onPointerUp(e);
+                      nc.setSelectedTextId("photo");
+                    }}
+                    onTouchEnd={
+                      nc.selectedTextId === "photo"
+                        ? pinch.onTouchEnd
+                        : undefined
+                    }
+                    onTouchMove={
+                      nc.selectedTextId === "photo"
+                        ? pinch.onTouchMove
+                        : undefined
+                    }
+                    onTouchStart={
+                      nc.selectedTextId === "photo"
+                        ? pinch.onTouchStart
+                        : undefined
+                    }
+                    title="Drag to move photo"
+                  >
+                    <Move className="size-5" />
+                  </div>
+                )}
 
                 <Handles
                   elementId="ncPhotoElement"
@@ -634,11 +676,65 @@ export function NcFramePage() {
             )}
 
             {nc.frame.hasOverlay && (
-              <img
-                alt="Frame greeting"
-                className="pointer-events-none absolute inset-0 z-20 h-full w-full object-contain"
-                src={nc.overlayVariant.src}
-              />
+              <>
+                <img
+                  alt="Frame greeting"
+                  className="pointer-events-none absolute inset-0 z-20 h-full w-full object-contain"
+                  src={nc.overlayVariant.src}
+                  style={{
+                    transform: greetingTransform,
+                    transformOrigin: `${greetingOriginX}% ${greetingOriginY}%`,
+                  }}
+                />
+                <div
+                  className={cn(
+                    "absolute z-20 cursor-grab touch-none select-none",
+                    nc.selectedTextId === "photo"
+                      ? "pointer-events-none"
+                      : "pointer-events-auto",
+                  )}
+                  id="ncGreetingElement"
+                  onPointerCancel={greetingDragProps.onPointerCancel}
+                  onPointerDown={greetingDragProps.onPointerDown}
+                  onPointerLeave={greetingDragProps.onPointerUp}
+                  onPointerMove={greetingDragProps.onPointerMove}
+                  onPointerUp={(e) => {
+                    greetingDragProps.onPointerUp(e);
+                    nc.setSelectedTextId("greeting");
+                  }}
+                  onTouchEnd={
+                    nc.selectedTextId === "greeting"
+                      ? pinch.onTouchEnd
+                      : undefined
+                  }
+                  onTouchMove={
+                    nc.selectedTextId === "greeting"
+                      ? pinch.onTouchMove
+                      : undefined
+                  }
+                  onTouchStart={
+                    nc.selectedTextId === "greeting"
+                      ? pinch.onTouchStart
+                      : undefined
+                  }
+                  style={{
+                    height: `${greetingBbox.height}%`,
+                    left: `${greetingBbox.x}%`,
+                    top: `${greetingBbox.y}%`,
+                    transform: greetingTransform,
+                    transformOrigin: "50% 50%",
+                    width: `${greetingBbox.width}%`,
+                  }}
+                >
+                  <Handles
+                    elementId="ncGreetingElement"
+                    isActive={nc.selectedTextId === "greeting"}
+                    onChange={handleScale}
+                    value={nc.greetingScale}
+                    visualScale={nc.greetingScale}
+                  />
+                </div>
+              </>
             )}
 
             <div
@@ -876,9 +972,11 @@ export function NcFramePage() {
             ))}
           </div>
 
-          {nc.frame.overlayVariants.length > 1 && (
+          {nc.frame.hasOverlay && (
             <div className="mb-4">
-              <div className="mb-1 font-medium text-xs">धन्यवाद</div>
+              <div className="mb-1 font-medium text-xs">
+                {nc.frame.overlayVariants.length > 1 ? "धन्यवाद" : "Overlay"}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {nc.frame.overlayVariants.map((variant) => (
                   <button
@@ -895,6 +993,19 @@ export function NcFramePage() {
                     {variant.label}
                   </button>
                 ))}
+                <button
+                  className={cn(
+                    "flex items-center gap-1 rounded-md border px-2 py-1 text-xs transition",
+                    nc.selectedTextId === "greeting"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-muted-foreground hover:bg-muted",
+                  )}
+                  onClick={() => nc.setSelectedTextId("greeting")}
+                  type="button"
+                >
+                  <Move className="size-3" />
+                  Move
+                </button>
               </div>
             </div>
           )}
@@ -952,8 +1063,44 @@ function Toolbar({
   if (selectedTextId === "map") {
     return <MapToolbar nc={nc} onClose={onClose} />;
   }
+  if (selectedTextId === "greeting") {
+    return <GreetingToolbar nc={nc} onClose={onClose} />;
+  }
   return (
     <TextToolbar nc={nc} onClose={onClose} selectedTextId={selectedTextId} />
+  );
+}
+
+function GreetingToolbar({
+  nc,
+  onClose,
+}: {
+  nc: NcReturn;
+  onClose: () => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-card px-2 py-1.5 shadow-md">
+      <span className="px-1 font-medium text-xs">धन्यवाद</span>
+
+      <div className="mx-0.5 h-5 w-px bg-border" />
+
+      <ScaleControls
+        onChange={(dir) => nc.adjustScale("greeting", dir)}
+        value={nc.greetingScale}
+      />
+
+      <div className="mx-0.5 h-5 w-px bg-border" />
+
+      <Button
+        aria-label="Close greeting toolbar"
+        className="size-7"
+        onClick={onClose}
+        size="icon"
+        variant="ghost"
+      >
+        <X className="size-3.5" />
+      </Button>
+    </div>
   );
 }
 
@@ -970,7 +1117,7 @@ function PhotoToolbar({ nc, onClose }: { nc: NcReturn; onClose: () => void }) {
           disabled={!nc.hasPhoto || nc.removeBgBusy}
           onClick={() => nc.removeBackground(nc.removeBgQuality)}
           size="sm"
-          variant="ghost"
+          variant="secondary"
         >
           <Sparkles className="size-3.5" />
           {nc.removeBgBusy ? "Removing..." : "Remove BG"}
@@ -1103,7 +1250,7 @@ function TextToolbar({
   onClose,
 }: {
   nc: NcReturn;
-  selectedTextId: Exclude<SelectedTextId, null | "photo" | "map">;
+  selectedTextId: Exclude<SelectedTextId, null | "photo" | "map" | "greeting">;
   onClose: () => void;
 }) {
   const [colorOpen, setColorOpen] = useState(false);

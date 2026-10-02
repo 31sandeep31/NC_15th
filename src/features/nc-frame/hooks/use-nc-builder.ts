@@ -46,6 +46,9 @@ export function useNcBuilder() {
     frame.overlayVariants.find((v) => v.id === overlayVariantId) ??
     frame.overlayVariants[0];
 
+  const [greetingOffset, setGreetingOffset] = useState<Offset>(ZERO);
+  const [greetingScale, setGreetingScale] = useState(1);
+
   const [layoutId, setLayoutId] = useState<NcLayoutPresetId>(
     frame.defaultLayoutId,
   );
@@ -337,6 +340,8 @@ export function useNcBuilder() {
       const next = findNcFrame(id);
       setFrameId(id);
       setOverlayVariantId(next.defaultOverlayVariantId);
+      setGreetingOffset(ZERO);
+      setGreetingScale(1);
       const preset =
         next.layoutPresets.find(
           (p) => p.id === (nextLayoutId ?? next.defaultLayoutId),
@@ -398,6 +403,9 @@ export function useNcBuilder() {
     setMapLabelColor(null);
     setMapLabelTextStyle({ ...DEFAULT_TEXT_STYLE });
 
+    setGreetingOffset(ZERO);
+    setGreetingScale(1);
+
     setSelectedTextId(null);
   }, [frame]);
 
@@ -434,6 +442,9 @@ export function useNcBuilder() {
   const onDrag = useCallback(
     (id: SelectedTextId, dx: number, dy: number) => {
       switch (id) {
+        case "greeting":
+          setGreetingOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+          return;
         case "map":
           setMapOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
           return;
@@ -467,6 +478,9 @@ export function useNcBuilder() {
   const adjustScale = useCallback((id: SelectedTextId, direction: number) => {
     const step = direction * TEXT_SCALE_STEP;
     switch (id) {
+      case "greeting":
+        setGreetingScale((prev) => Number((prev + step).toFixed(2)));
+        return;
       case "map":
         setMapScale((prev) => Number((prev + step).toFixed(2)));
         return;
@@ -491,6 +505,9 @@ export function useNcBuilder() {
   const setScaleValue = useCallback((id: SelectedTextId, value: number) => {
     const safe = Number(Math.max(0.1, Math.min(5, value)).toFixed(2));
     switch (id) {
+      case "greeting":
+        setGreetingScale(safe);
+        return;
       case "map":
         setMapScale(safe);
         return;
@@ -515,6 +532,8 @@ export function useNcBuilder() {
 
   const getScaleValue = useCallback((id: SelectedTextId): number => {
     switch (id) {
+      case "greeting":
+        return greetingScale;
       case "map":
         return mapScale;
       case "mapLabel":
@@ -527,7 +546,7 @@ export function useNcBuilder() {
         if (typeof id === "number") return roleScaleAdjusts[id] ?? 1;
         return 1;
     }
-  }, [mapScale, mapLabelScale, nameScaleAdjust, roleScaleAdjusts, scale]);
+  }, [greetingScale, mapScale, mapLabelScale, nameScaleAdjust, roleScaleAdjusts, scale]);
 
   const nameTransformStyle = useMemo(() => {
     const { nameText } = frame;
@@ -643,6 +662,12 @@ export function useNcBuilder() {
       });
 
       const mapLabelEl = document.getElementById("ncMapLabel");
+      const overlayBbox = overlayVariant.bbox ?? {
+        height: 100,
+        width: 100,
+        x: 0,
+        y: 0,
+      };
 
       await generateNcPoster({
         designations,
@@ -676,6 +701,13 @@ export function useNcBuilder() {
               }
             : undefined,
         overlaySrc: overlayVariant.src,
+        overlayTransform: {
+          originX: overlayBbox.x + overlayBbox.width / 2,
+          originY: overlayBbox.y + overlayBbox.height / 2,
+          scale: greetingScale,
+          x: greetingOffset.x,
+          y: greetingOffset.y,
+        },
         photoImage: photoImageRef.current ?? undefined,
         photoSrc,
         stage,
@@ -694,6 +726,8 @@ export function useNcBuilder() {
     designationLines,
     frame,
     fullName,
+    greetingOffset,
+    greetingScale,
     hasPhoto,
     mapFill,
     mapLabel,
@@ -745,6 +779,8 @@ export function useNcBuilder() {
     fullNameInputRef,
     getRoleTransformStyle,
     getScaleValue,
+    greetingOffset,
+    greetingScale,
     groupedDistricts,
     hasPhoto,
     layoutId,
